@@ -17,8 +17,7 @@ import type { SimulationRequest } from '../../types/monitoring';
 export const Dashboard = () => {
   const navigate = useNavigate();
   const { sessionId } = useDeployStore();
-  const { metrics, anomaly, alerts, isSimulating, acknowledgeAlert } =
-    useMonitoringStore();
+  const { metrics, anomaly, alerts, isSimulating, acknowledgeAlert } = useMonitoringStore();
 
   // モニタリングポーリング開始
   useMonitoringPolling(sessionId);
@@ -59,9 +58,7 @@ export const Dashboard = () => {
           <EmptyState>
             <EmptyIcon>🐧</EmptyIcon>
             <EmptyTitle>デプロイされたリソースがありません</EmptyTitle>
-            <EmptyDescription>
-              まずリソースをデプロイしてから、モニタリングを開始してください。
-            </EmptyDescription>
+            <EmptyDescription>まずリソースをデプロイしてから、モニタリングを開始してください。</EmptyDescription>
             <Button size="large" onClick={() => navigate(PATHS.DEPLOY)}>
               デプロイページへ移動
             </Button>
@@ -94,34 +91,19 @@ export const Dashboard = () => {
             <SessionId>Session: {sessionId}</SessionId>
           </TitleSection>
           <ButtonGroup>
-            <Button
-              variant="secondary"
-              onClick={() => setShowSimulation(!showSimulation)}
-            >
-              {showSimulation
-                ? 'シミュレーションを閉じる'
-                : '🎮 シミュレーション'}
+            <Button variant="secondary" onClick={() => setShowSimulation(!showSimulation)}>
+              {showSimulation ? 'シミュレーションを閉じる' : '🎮 シミュレーション'}
             </Button>
-            <Button onClick={() => navigate(PATHS.DEPLOY)}>
-              デプロイコンソール
-            </Button>
+            <Button onClick={() => navigate(PATHS.DEPLOY)}>デプロイコンソール</Button>
           </ButtonGroup>
         </Header>
 
         {/* ペンギンコーチ */}
-        <PenguinCoach
-          mood={anomaly.penguinAnimation}
-          status={anomaly.healthState}
-          message={anomaly.coachMessage}
-        />
+        <PenguinCoach mood={anomaly.penguinAnimation} status={anomaly.healthState} message={anomaly.coachMessage} />
 
         {/* シミュレーションパネル */}
         {showSimulation && (
-          <SimulationPanel
-            isSimulating={isSimulating}
-            onSimulate={handleSimulate}
-            onStop={stopSimulation}
-          />
+          <SimulationPanel isSimulating={isSimulating} onSimulate={handleSimulate} onStop={stopSimulation} />
         )}
 
         {/* メトリクスカード */}
@@ -153,9 +135,7 @@ export const Dashboard = () => {
         </MetricsGrid>
 
         {/* アラートリスト */}
-        {alerts.length > 0 && (
-          <AlertList alerts={alerts} onAcknowledge={acknowledgeAlert} />
-        )}
+        {alerts.length > 0 && <AlertList alerts={alerts} onAcknowledge={acknowledgeAlert} />}
       </Container>
     </Layout>
   );
