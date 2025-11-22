@@ -1,12 +1,6 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import type {
-  MetricData,
-  AnomalyScore,
-  Alert,
-  HealthState,
-  PenguinAnimation,
-} from '../types/monitoring';
+import type { MetricData, AnomalyScore, Alert, HealthState, PenguinAnimation } from '../types/monitoring';
 
 interface MonitoringStore {
   // State
@@ -16,8 +10,6 @@ interface MonitoringStore {
   isSimulating: boolean;
 
   // Actions
-  setMetrics: (metrics: MetricData) => void;
-  setAnomaly: (anomaly: AnomalyScore) => void;
   setAlerts: (alerts: Alert[]) => void;
   addAlert: (alert: Alert) => void;
   acknowledgeAlert: (alertId: string) => void;
@@ -66,12 +58,10 @@ function calculateAnomaly(metrics: MetricData): AnomalyScore {
   let coachMessage: string;
 
   // いずれかが危険しきい値を超えた場合
-  const hasDanger =
-    metrics.cpuUsage >= 70 || metrics.latency >= 700 || metrics.errorRate >= 5;
+  const hasDanger = metrics.cpuUsage >= 70 || metrics.latency >= 700 || metrics.errorRate >= 5;
 
   // いずれかが注意しきい値を超えた場合
-  const hasWarning =
-    metrics.cpuUsage >= 50 || metrics.latency >= 400 || metrics.errorRate >= 3;
+  const hasWarning = metrics.cpuUsage >= 50 || metrics.latency >= 400 || metrics.errorRate >= 3;
 
   if (hasDanger) {
     healthState = 'danger';
@@ -108,16 +98,6 @@ function calculateAnomaly(metrics: MetricData): AnomalyScore {
 export const useMonitoringStore = create<MonitoringStore>()(
   immer((set) => ({
     ...initialState,
-
-    setMetrics: (metrics) =>
-      set((state) => {
-        state.metrics = metrics;
-      }),
-
-    setAnomaly: (anomaly) =>
-      set((state) => {
-        state.anomaly = anomaly;
-      }),
 
     setAlerts: (alerts) =>
       set((state) => {

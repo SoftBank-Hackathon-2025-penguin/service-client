@@ -34,7 +34,6 @@ export interface AnomalyScore {
  */
 export interface MonitoringResponse {
   metrics: MetricData;
-  anomaly: AnomalyScore;
   alerts: Alert[];
 }
 

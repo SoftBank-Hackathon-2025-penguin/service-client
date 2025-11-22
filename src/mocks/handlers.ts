@@ -18,12 +18,6 @@ let monitoringData: MonitoringResponse = {
     errorRate: 0.5,
     timestamp: new Date().toISOString(),
   },
-  anomaly: {
-    healthScore: 10,
-    healthState: 'healthy',
-    penguinAnimation: 'happy',
-    coachMessage: '👍 非常に安定しています！',
-  },
   alerts: [],
 };
 
@@ -224,10 +218,6 @@ export const startSimulationHandler = http.post(`${BASE_URL}/api/v1/monitoring/s
       monitoringData.metrics.cpuUsage = 85;
       monitoringData.metrics.latency = 250;
       monitoringData.metrics.errorRate = 1;
-      monitoringData.anomaly.healthScore = 50;
-      monitoringData.anomaly.healthState = 'danger';
-      monitoringData.anomaly.penguinAnimation = 'crying';
-      monitoringData.anomaly.coachMessage = '🚨 CPUが過熱しています！';
       monitoringData.alerts.push({
         id: `alert-${Date.now()}`,
         level: 'critical',
@@ -241,10 +231,6 @@ export const startSimulationHandler = http.post(`${BASE_URL}/api/v1/monitoring/s
       monitoringData.metrics.cpuUsage = 45;
       monitoringData.metrics.latency = 850;
       monitoringData.metrics.errorRate = 2;
-      monitoringData.anomaly.healthScore = 60;
-      monitoringData.anomaly.healthState = 'danger';
-      monitoringData.anomaly.penguinAnimation = 'crying';
-      monitoringData.anomaly.coachMessage = '🚨 応答時間が非常に遅いです！';
       monitoringData.alerts.push({
         id: `alert-${Date.now()}`,
         level: 'critical',
@@ -258,10 +244,6 @@ export const startSimulationHandler = http.post(`${BASE_URL}/api/v1/monitoring/s
       monitoringData.metrics.cpuUsage = 50;
       monitoringData.metrics.latency = 300;
       monitoringData.metrics.errorRate = 8;
-      monitoringData.anomaly.healthScore = 80;
-      monitoringData.anomaly.healthState = 'danger';
-      monitoringData.anomaly.penguinAnimation = 'crying';
-      monitoringData.anomaly.coachMessage = '🚨 エラーが多発しています！';
       monitoringData.alerts.push({
         id: `alert-${Date.now()}`,
         level: 'critical',
@@ -286,10 +268,6 @@ export const stopSimulationHandler = http.post(`${BASE_URL}/api/v1/monitoring/si
   monitoringData.metrics.cpuUsage = 25;
   monitoringData.metrics.latency = 150;
   monitoringData.metrics.errorRate = 0.5;
-  monitoringData.anomaly.healthScore = 10;
-  monitoringData.anomaly.healthState = 'healthy';
-  monitoringData.anomaly.penguinAnimation = 'happy';
-  monitoringData.anomaly.coachMessage = '👍 非常に安定しています！';
 
   return HttpResponse.json({ message: 'シミュレーションが終了しました。' });
 });
