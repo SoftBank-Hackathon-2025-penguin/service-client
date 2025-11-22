@@ -1,16 +1,13 @@
-# REACT Frontend 코드 저장소
+# 🐧 Penguin-Land
 
-> 해당 코드 베이스는 특정 규칙을 따릅니다. 참고하여 개발하시길 바랍니다.
+<div align="center">
 
-## Component
+**TerraformベースのワンクリックAWS配布とペンギンのかわいいコーチングモニタリング**
 
-- 공통 컴포넌트 만들 경우
-  - `src/components/common`에 컴포넌트 추가
-- 새로운 페이지를 만들 경우
-  - `src/constants/paths.ts`에 PATH 추가
-  - `main.tsx`에 routing 추가
-  - `src/components/page`에 새로운 페이지에 대한 컴포넌트 추가
-  - 부가적인 컴포넌트는 pages 폴더 밖에서 자유롭게 구조 선택
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-7.2-646CFF?logo=vite)](https://vitejs.dev/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 **言語 / Language:** [🇯🇵 日本語](README.md) | [🇰🇷 한국어](README.ko.md) | [🇺🇸 English](README.en.md)
 
