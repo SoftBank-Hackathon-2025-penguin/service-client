@@ -12,6 +12,7 @@
   "dependencies": {
     "@tanstack/react-query": "^5.90.10",
     "axios": "^1.13.2",
+    "canvas-confetti": "^1.9.4",
     "immer": "^10.2.0",
     "lottie-react": "^2.4.1",
     "react": "^19.2.0",
@@ -23,6 +24,7 @@
   },
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.90.10",
+    "@types/canvas-confetti": "^1.9.0",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@types/styled-components": "^5.1.36",
