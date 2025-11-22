@@ -6,11 +6,11 @@ import { Layout } from '../common/Layout';
 import { Button } from '../common/Button';
 import { Card } from '../common/Card';
 import { LoadingSpinner } from '../common/LoadingSpinner';
-import { Toast } from '../common/Toast';
 import { ProgressBar } from '../deploy/ProgressBar';
 import { LogViewer } from '../deploy/LogViewer';
 import { ResourcePanel } from '../deploy/ResourcePanel';
 import { useDeployStore } from '../../stores/deployStore';
+import { useToastStore } from '../../stores/toastStore';
 import { useDeployPolling } from '../../hooks/useDeployPolling';
 import { createDeploy, getResources, destroyDeploy } from '../../api/deploy';
 import { PATHS } from '../../constants/paths';
@@ -31,12 +31,8 @@ export const DeployPage = () => {
     reset,
   } = useDeployStore();
 
+  const { showToast } = useToastStore();
   const { startPolling } = useDeployPolling();
-
-  const [toast, setToast] = useState<{
-    message: string;
-    type: 'success' | 'error' | 'info';
-  } | null>(null);
 
   const [isCreating, setIsCreating] = useState(false);
   const [isDestroying, setIsDestroying] = useState(false);
@@ -46,10 +42,7 @@ export const DeployPage = () => {
    */
   const handleCreate = async () => {
     if (deployState === 'APPLYING' || deployState === 'PLANNING') {
-      setToast({
-        message: 'デプロイは既に進行中です',
-        type: 'error',
-      });
+      showToast('デプロイは既に進行中です', 'error');
       return;
     }
 
@@ -67,18 +60,10 @@ export const DeployPage = () => {
       console.log('[Deploy] 🎬 Starting polling...');
       startPolling();
 
-      setToast({
-        message: 'デプロイが開始されました！',
-        type: 'success',
-      });
+      showToast('デプロイが開始されました！', 'success');
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'デプロイ開始に失敗しました'
-      );
-      setToast({
-        message: 'デプロイ開始に失敗しました',
-        type: 'error',
-      });
+      setError(err instanceof Error ? err.message : 'デプロイ開始に失敗しました');
+      showToast('デプロイ開始に失敗しました', 'error');
     } finally {
       setIsCreating(false);
     }
@@ -96,10 +81,7 @@ export const DeployPage = () => {
 
           // ペンギンスペシャルセレブレーション！ 🐧🎉
           penguinCelebration();
-          setToast({
-            message: '🎉 デプロイが完了しました！',
-            type: 'success',
-          });
+          showToast('🎉 デプロイが完了しました！', 'success');
         } catch (error) {
           console.error('Failed to fetch resources:', error);
           setError('リソース情報の取得に失敗しました');
@@ -107,7 +89,7 @@ export const DeployPage = () => {
       };
       fetchResources();
     }
-  }, [deployState, sessionId, setResources, setError]);
+  }, [deployState, sessionId, setResources, setError, showToast]);
 
   /**
    * デプロイの削除
@@ -118,11 +100,7 @@ export const DeployPage = () => {
     }
 
     // eslint-disable-next-line no-alert
-    if (
-      window.confirm(
-        '本当にすべてのリソースを削除しますか？\nこの操作は元に戻せません。'
-      )
-    ) {
+    if (window.confirm('本当にすべてのリソースを削除しますか？\nこの操作は元に戻せません。')) {
       try {
         setIsDestroying(true);
         setError(null);
@@ -130,18 +108,16 @@ export const DeployPage = () => {
 
         // 状態の初期化とページ遷移
         reset();
-        navigate(PATHS.MAIN);
 
-        setToast({
-          message: 'リソースの削除が完了しました',
-          type: 'success',
-        });
+        // Toast表示後にナビゲーション（Toastが表示される時間を確保）
+        showToast('✅ リソースの削除が完了しました', 'success');
+
+        setTimeout(() => {
+          navigate(PATHS.MAIN);
+        }, 500);
       } catch (err) {
         setError(err instanceof Error ? err.message : '削除に失敗しました');
-        setToast({
-          message: 'リソースの削除に失敗しました',
-          type: 'error',
-        });
+        showToast('リソースの削除に失敗しました', 'error');
       } finally {
         setIsDestroying(false);
       }
@@ -159,9 +135,7 @@ export const DeployPage = () => {
   };
 
   const isInProgress =
-    deployState === 'APPLYING' ||
-    deployState === 'PLANNING' ||
-    (sessionId && deployState === 'INIT');
+    deployState === 'APPLYING' || deployState === 'PLANNING' || (sessionId && deployState === 'INIT');
   const isComplete = deployState === 'COMPLETE';
   const isFailed = deployState === 'FAILED';
 
@@ -179,11 +153,7 @@ export const DeployPage = () => {
           <ButtonGroup>
             {isFailed && <Button onClick={handleRetry}>再試行</Button>}
             {(isComplete || isFailed) && (
-              <Button
-                variant="danger"
-                onClick={handleDestroy}
-                disabled={isDestroying}
-              >
+              <Button variant="danger" onClick={handleDestroy} disabled={isDestroying}>
                 {isDestroying ? '削除中...' : 'すべて削除'}
               </Button>
             )}
@@ -208,16 +178,10 @@ export const DeployPage = () => {
         {(sessionId || isInProgress || isComplete || isFailed) && (
           <>
             <Card>
-              <ProgressBar
-                progress={progress}
-                state={deployState}
-                currentStage={currentStage}
-              />
+              <ProgressBar progress={progress} state={deployState} currentStage={currentStage} />
             </Card>
 
-            {isInProgress && (
-              <LoadingSpinner message="デプロイが進行中です..." />
-            )}
+            {isInProgress && <LoadingSpinner message="デプロイが進行中です..." />}
 
             {logs.length > 0 && <LogViewer logs={logs} />}
 
@@ -232,14 +196,6 @@ export const DeployPage = () => {
           </>
         )}
       </Container>
-
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast(null)}
-        />
-      )}
     </Layout>
   );
 };
