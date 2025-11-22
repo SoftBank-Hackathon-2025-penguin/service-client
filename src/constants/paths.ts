@@ -1,7 +1,9 @@
 /**
- * PATHS에 하나하나 경로를 추가하고 활용하면 됨. (ex. 아래의 children)
+ * PATHSに一つずつルートを追加して活用（例: 以下のchildren）
  */
 export const PATHS = {
   MAIN: '/',
   DEPLOY: '/deploy',
+  DASHBOARD: '/dashboard',
+  DEMO: '/demo',
 } as const;
