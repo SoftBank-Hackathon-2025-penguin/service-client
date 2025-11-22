@@ -1,5 +1,5 @@
 /**
- * 예시 타입 정의
+ * サンプルタイプ定義
  */
 export type ExampleResponse = {
   id: number;
