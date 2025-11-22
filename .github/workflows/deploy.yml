@@ -7,6 +7,16 @@ on:
   push:
     branches:
       - main # mainブランチにコードがpushされたときに実行
+    paths:
+      # 以下のファイル/フォルダに変更があった場合のみ実行
+      - 'src/**'
+      - 'public/**'
+      - 'index.html'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'vite.config.ts'
+      - 'tsconfig.json'
+      - '.github/workflows/deploy.yml'
 
 jobs:
   deploy:
