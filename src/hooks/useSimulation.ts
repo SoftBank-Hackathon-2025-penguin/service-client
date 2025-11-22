@@ -6,9 +6,9 @@ import type { SimulationRequest } from '../types/monitoring';
 type TimeoutId = ReturnType<typeof setTimeout>;
 
 /**
- * シミュレーションフック
+ * 統合シミュレーションフック
  */
-export const useSimulation = (sessionId: string | null) => {
+export const useSimulation = () => {
   const { setSimulating, calculateAnomalyFromMetrics } = useMonitoringStore();
   const timeoutRef = useRef<TimeoutId | null>(null);
 
@@ -17,10 +17,6 @@ export const useSimulation = (sessionId: string | null) => {
    */
   const simulate = useCallback(
     async (scenario: SimulationRequest['scenario'], duration = 30) => {
-      if (!sessionId) {
-        return;
-      }
-
       try {
         console.log('[Simulation] 🎮 Starting simulation:', scenario, 'for', duration, 'seconds');
         setSimulating(true);
@@ -50,11 +46,7 @@ export const useSimulation = (sessionId: string | null) => {
         }
 
         // バックエンド呼び出し
-        await startSimulation({
-          sessionId,
-          scenario,
-          duration,
-        });
+        await startSimulation(scenario, duration);
 
         // 指定時間後に自動終了
         if (timeoutRef.current) {
@@ -70,22 +62,17 @@ export const useSimulation = (sessionId: string | null) => {
         setSimulating(false);
       }
     },
-    [sessionId, setSimulating, calculateAnomalyFromMetrics]
+    [setSimulating, calculateAnomalyFromMetrics]
   );
 
   /**
    * シミュレーション終了
    */
   const stopSimulationHandler = useCallback(async () => {
-    if (!sessionId) {
-      console.log('[Simulation] ❌ No sessionId, cannot stop');
-      return;
-    }
-
-    console.log('[Simulation] 🛑 Stopping simulation for session:', sessionId);
+    console.log('[Simulation] 🛑 Stopping simulation');
 
     try {
-      await stopSimulation(sessionId);
+      await stopSimulation();
       console.log('[Simulation] ✅ Simulation stopped successfully');
 
       // 正常状態に復旧
@@ -107,11 +94,10 @@ export const useSimulation = (sessionId: string | null) => {
       console.error('Simulation stop error:', error);
       setSimulating(false);
     }
-  }, [sessionId, setSimulating, calculateAnomalyFromMetrics]);
+  }, [setSimulating, calculateAnomalyFromMetrics]);
 
   return {
     simulate,
     stopSimulation: stopSimulationHandler,
   };
 };
-

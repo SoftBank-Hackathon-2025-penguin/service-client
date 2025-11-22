@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Layout } from '../common/Layout';
 import { Button } from '../common/Button';
@@ -7,22 +6,17 @@ import { PenguinCoach } from '../dashboard/PenguinCoach';
 import { MetricCard } from '../dashboard/MetricCard';
 import { AlertList } from '../dashboard/AlertList';
 import { SimulationPanel } from '../dashboard/SimulationPanel';
-import { useDeployStore } from '../../stores/deployStore';
 import { useMonitoringStore } from '../../stores/monitoringStore';
 import { useMonitoringPolling } from '../../hooks/useMonitoringPolling';
 import { useSimulation } from '../../hooks/useSimulation';
-import { PATHS } from '../../constants/paths';
 import type { SimulationRequest } from '../../types/monitoring';
 
 export const Dashboard = () => {
-  const navigate = useNavigate();
-  const { sessionId } = useDeployStore();
   const { metrics, anomaly, alerts, isSimulating, acknowledgeAlert } = useMonitoringStore();
 
-  // モニタリングポーリング開始
-  useMonitoringPolling(sessionId);
+  useMonitoringPolling();
 
-  const { simulate, stopSimulation } = useSimulation(sessionId);
+  const { simulate, stopSimulation } = useSimulation();
 
   const [showSimulation, setShowSimulation] = useState(false);
 
@@ -50,24 +44,6 @@ export const Dashboard = () => {
     return 'healthy';
   };
 
-  // セッションがない場合はデプロイページにリダイレクト
-  if (!sessionId) {
-    return (
-      <Layout>
-        <Container>
-          <EmptyState>
-            <EmptyIcon>🐧</EmptyIcon>
-            <EmptyTitle>デプロイされたリソースがありません</EmptyTitle>
-            <EmptyDescription>まずリソースをデプロイしてから、モニタリングを開始してください。</EmptyDescription>
-            <Button size="large" onClick={() => navigate(PATHS.DEPLOY)}>
-              デプロイページへ移動
-            </Button>
-          </EmptyState>
-        </Container>
-      </Layout>
-    );
-  }
-
   // 初期ローディング状態
   if (!metrics || !anomaly) {
     return (
@@ -86,15 +62,11 @@ export const Dashboard = () => {
     <Layout>
       <Container>
         <Header>
-          <TitleSection>
-            <Title>📊 モニタリングダッシュボード</Title>
-            <SessionId>Session: {sessionId}</SessionId>
-          </TitleSection>
+          <Title>📊 統合モニタリングダッシュボード</Title>
           <ButtonGroup>
             <Button variant="secondary" onClick={() => setShowSimulation(!showSimulation)}>
               {showSimulation ? 'シミュレーションを閉じる' : '🎮 シミュレーション'}
             </Button>
-            <Button onClick={() => navigate(PATHS.DEPLOY)}>デプロイコンソール</Button>
           </ButtonGroup>
         </Header>
 
@@ -155,24 +127,11 @@ const Header = styled.div`
   gap: 1rem;
 `;
 
-const TitleSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-`;
-
 const Title = styled.h1`
   font-size: 2rem;
   font-weight: 700;
   color: ${({ theme }) => theme.color.baseColor2};
   margin: 0;
-`;
-
-const SessionId = styled.p`
-  font-size: 0.875rem;
-  color: ${({ theme }) => theme.color.baseColor5};
-  margin: 0;
-  font-family: 'Monaco', 'Courier New', monospace;
 `;
 
 const ButtonGroup = styled.div`
@@ -184,37 +143,6 @@ const MetricsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
-`;
-
-const EmptyState = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 4rem 2rem;
-  background: ${({ theme }) => theme.color.white};
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-`;
-
-const EmptyIcon = styled.div`
-  font-size: 5rem;
-  margin-bottom: 1rem;
-`;
-
-const EmptyTitle = styled.h2`
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: ${({ theme }) => theme.color.baseColor2};
-  margin: 0 0 0.75rem 0;
-`;
-
-const EmptyDescription = styled.p`
-  font-size: 1rem;
-  color: ${({ theme }) => theme.color.baseColor5};
-  margin: 0 0 2rem 0;
-  text-align: center;
-  line-height: 1.6;
 `;
 
 const LoadingMessage = styled.div`

@@ -177,11 +177,6 @@ export const DeployPage = () => {
         <Header>
           <Title>🚀 デプロイコンソール</Title>
           <ButtonGroup>
-            {isComplete && (
-              <Button onClick={() => navigate(PATHS.DASHBOARD)}>
-                ダッシュボードへ移動
-              </Button>
-            )}
             {isFailed && <Button onClick={handleRetry}>再試行</Button>}
             {(isComplete || isFailed) && (
               <Button

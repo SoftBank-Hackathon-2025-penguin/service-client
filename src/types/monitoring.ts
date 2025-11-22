@@ -30,9 +30,9 @@ export interface AnomalyScore {
 
 /**
  * モニタリングレスポンス
+ * Dashboard統合モニタリング用
  */
 export interface MonitoringResponse {
-  sessionId: string;
   metrics: MetricData;
   anomaly: AnomalyScore;
   alerts: Alert[];
@@ -53,7 +53,6 @@ export interface Alert {
  * シミュレーションリクエスト
  */
 export interface SimulationRequest {
-  sessionId: string;
   scenario: 'cpu_spike' | 'high_latency' | 'error_burst' | 'normal';
   duration?: number; // seconds
 }

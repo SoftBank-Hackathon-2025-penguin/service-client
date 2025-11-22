@@ -5,26 +5,22 @@ import { getMonitoring } from '../api/monitoring';
 type IntervalId = ReturnType<typeof setInterval>;
 
 /**
- * モニタリングポーリングフック
- * 
+ * 統合モニタリングポーリングフック
+ *
  * 5秒間隔でメトリクスを照会
  */
-export const useMonitoringPolling = (sessionId: string | null) => {
+export const useMonitoringPolling = () => {
   const { calculateAnomalyFromMetrics, setAlerts } = useMonitoringStore();
   const intervalRef = useRef<IntervalId | null>(null);
   const isPollingRef = useRef(false);
 
   const poll = useCallback(async () => {
-    if (!sessionId) {
-      return;
-    }
-
     try {
-      const data = await getMonitoring(sessionId);
-      
+      const data = await getMonitoring();
+
       // メトリクスベースの異常兆候を計算
       calculateAnomalyFromMetrics(data.metrics);
-      
+
       // アラートを更新
       if (data.alerts && data.alerts.length > 0) {
         setAlerts(data.alerts);
@@ -32,10 +28,10 @@ export const useMonitoringPolling = (sessionId: string | null) => {
     } catch (error) {
       console.error('Monitoring polling error:', error);
     }
-  }, [sessionId, calculateAnomalyFromMetrics, setAlerts]);
+  }, [calculateAnomalyFromMetrics, setAlerts]);
 
   const startPolling = useCallback(() => {
-    if (!sessionId || isPollingRef.current) {
+    if (isPollingRef.current) {
       return;
     }
 
@@ -48,7 +44,7 @@ export const useMonitoringPolling = (sessionId: string | null) => {
     intervalRef.current = setInterval(() => {
       poll();
     }, 5000);
-  }, [sessionId, poll]);
+  }, [poll]);
 
   const stopPolling = useCallback(() => {
     if (intervalRef.current) {
@@ -59,14 +55,12 @@ export const useMonitoringPolling = (sessionId: string | null) => {
   }, []);
 
   useEffect(() => {
-    if (sessionId) {
-      startPolling();
-    }
+    startPolling();
 
     return () => {
       stopPolling();
     };
-  }, [sessionId, startPolling, stopPolling]);
+  }, [startPolling, stopPolling]);
 
   return {
     startPolling,
@@ -74,4 +68,3 @@ export const useMonitoringPolling = (sessionId: string | null) => {
     isPolling: isPollingRef.current,
   };
 };
-
