@@ -3,4 +3,5 @@
  */
 export const PATHS = {
   MAIN: '/',
+  DEPLOY: '/deploy',
 } as const;
