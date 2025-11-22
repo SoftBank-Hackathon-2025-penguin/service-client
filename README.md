@@ -12,33 +12,243 @@
   - `src/components/page`에 새로운 페이지에 대한 컴포넌트 추가
   - 부가적인 컴포넌트는 pages 폴더 밖에서 자유롭게 구조 선택
 
-## State Management (zustand)
+**言語 / Language:** [🇯🇵 日本語](README.md) | [🇰🇷 한국어](README.ko.md) | [🇺🇸 English](README.en.md)
 
-- stores의 형식을 보고 자유롭게 만들기 (immer를 쓸지 말지는 개발하는 사람 자유)
-
-## Styling (styled-components)
-
-- 전체적인 color셋은 `src/theme/theme.ts`에 존재
-  - 사용방법: `color: ${(props) => props.theme.color.baseColor2};`
-  - `src/theme/GlobalStyle.tsx`의 body > color 적용된 것을 참고
-- 나머지는 알아서 진행
-
-## API (axios & react-query)
-
-- `src/api/_client.ts`에서 통합 client를 만들고 다른 곳에서 import하여 사용하는 방식입니다.
-- react-query를 활용한 구조는 `src/api/example.ts`를 참고 바랍니다. (어느정도 익숙해졌다 싶으면 해당 파일은 삭제해도 좋습니다.)
-- post, put, delete의 개념을 가진 useMutation은 제가 별로 사용하지 않아 axios로 그대로 호출 후, GET Query에 대해 InvalidQuery를 적용하는 편입니다. 허나 useMutation도 그대로 사용하신다면 그대로 사용하셔도 괜찮습니다.
+</div>
 
 ---
 
-## 기술 스택
+## 📝 プロジェクト概要
 
-- Node.js v24.11.1
-- Base: React v19
-- Bundler: Vite v7
-- Language: TypeScript v5
-- Styling: styled-components v6
-- Status Management: zustand v5
-- HTTP w/server: axios v1.13 + TanStack Query v5
-- Package Manger: pnpm
-- Code Rule & Formatting: Prettier, eslint
+**Penguin-Land**は、Terraformを活用してAWSインフラをワンクリックでデプロイし、ペンギンキャラクターによるゲーミフィケーションされたモニタリングを提供するサービスです。
+
+### 🎯 ハッカソンテーマ
+
+DevOps初心者でも簡単にクラウドインフラを構築でき、システムの状態を直感的に理解できるようにすることを目指しました。
+
+---
+
+## ✨ 主な機能
+
+### 1. 🚀 ワンクリックデプロイ
+
+- ボタン一つで7種類のAWSリソースを自動作成
+- Terraform Planの可視化
+- リアルタイムログ表示
+- 自動ロールバック機能
+
+**作成されるAWSリソース:**
+
+- EC2 Instance (t2.micro)
+- VPC (ネットワーク分離)
+- DynamoDB (NoSQLデータベース)
+- S3 (静的ファイルストレージ)
+- Lambda (イベント処理)
+- CloudWatch (ログ＆モニタリング)
+- SNS (通知サービス)
+
+### 2. 🐧 ペンギンコーチング
+
+システムの状態に応じてペンギンの表情が変化し、直感的にステータスを理解できます。
+
+- **😊 Happy**: システムが安定している状態
+- **😐 worried**: 少し注意が必要な状態
+- **😢 Crying**: 緊急対応が必要な状態
+
+### 3. 📊 リアルタイムモニタリング
+
+CloudWatchベースのメトリクスをリアルタイムで監視し、異常兆候を自動検出します。
+
+**監視項目:**
+
+- CPU使用率
+- レイテンシー（応答時間）
+- エラー率
+
+### 4. 🎮 シミュレーションモード
+
+デモ用に以下のシナリオをシミュレートできます：
+
+- **CPUスパイク**: CPU使用率が85%に急上昇
+- **高レイテンシー**: 応答時間が850msに増加
+- **エラーバースト**: エラー率が8%に急上昇
+
+---
+
+## 🛠️ 技術スタック
+
+### フロントエンド
+
+- **React 19** - 最新のReactフレームワーク
+- **TypeScript** - 型安全な開発
+- **Vite** - 高速なビルドツール
+- **Styled Components** - CSS-in-JS
+- **React Router v7** - ルーティング
+
+### 状態管理 & データフェッチング
+
+- **Zustand** - 軽量な状態管理
+- **TanStack Query** - サーバー状態管理
+- **Axios** - HTTPクライアント
+
+### UI/UX
+
+- **Lottie** - 滑らかなアニメーション
+- **Canvas Confetti** - お祝いエフェクト
+- **Noto Sans JP** - 日本語フォント
+
+### 開発ツール
+
+- **MSW (Mock Service Worker)** - API モッキング
+- **ESLint** - コード品質
+- **Prettier** - コードフォーマット
+
+---
+
+## 🚀 クイックスタート
+
+### 前提条件
+
+- Node.js 18以上
+- pnpm（推奨）または npm
+
+### インストール
+
+```bash
+# リポジトリをクローン
+git clone <repository-url>
+cd service-client
+
+# 依存パッケージをインストール
+pnpm install
+
+# 開発サーバーを起動
+pnpm dev
+```
+
+### アクセス
+
+ブラウザで `http://localhost:3000` にアクセスしてください。
+
+---
+
+## 📦 プロジェクト構成
+
+```
+service-client/
+├── src/
+│   ├── api/               # API通信
+│   ├── components/        # Reactコンポーネント
+│   │   ├── common/       # 共通コンポーネント
+│   │   ├── dashboard/    # ダッシュボード
+│   │   ├── deploy/       # デプロイ
+│   │   └── pages/        # ページ
+│   ├── hooks/            # カスタムフック
+│   ├── mocks/            # MSW モック
+│   ├── stores/           # Zustand ストア
+│   ├── types/            # TypeScript型定義
+│   ├── utils/            # ユーティリティ関数
+│   └── theme/            # テーマ設定
+├── public/               # 静的ファイル
+└── index.html           # エントリーポイント
+```
+
+---
+
+## 🎨 デザインの特徴
+
+### 🌈 カラースキーム
+
+- **Primary**: `#3B82F6` (ブルー)
+- **healthy**: `#22C55E` (グリーン)
+- **Warning**: `#F59E0B` (オレンジ)
+- **Danger**: `#EF4444` (レッド)
+
+### 💫 アニメーション
+
+- デプロイ完了時の華やかな花火エフェクト
+- ペンギンの可愛らしいアニメーション
+- スムーズなページ遷移
+
+---
+
+## 🧪 開発モード
+
+### MSW（Mock Service Worker）
+
+バックエンドなしでフロントエンド開発ができるよう、MSWでAPIをモックしています。
+
+**デプロイシミュレーション:**
+
+- 0秒: 初期化 (0%)
+- 5秒: 計画フェーズ (10%)
+- 15秒: リソース作成開始 (30%)
+- 30秒: 進行中 (60%)
+- 45秒: 完了 (100%) 🎉
+
+### 環境変数
+
+```env
+# .env.development
+VITE_ENABLE_MOCK=true
+VITE_API_BASE_URL=http://localhost:8000
+```
+
+---
+
+## 📱 主な画面
+
+### 1. ランディングページ (`/`)
+
+プロジェクトの紹介と主な機能を表示します。
+
+### 2. デプロイコンソール (`/deploy`)
+
+- ワンクリックデプロイ
+- リアルタイム進捗表示
+- ログビューアー
+- リソース情報表示
+- すべて削除機能
+
+### 3. モニタリングダッシュボード (`/dashboard`)
+
+- ペンギンコーチング
+- メトリクスカード（CPU、レイテンシー、エラー率）
+- アラートリスト
+- シミュレーションパネル
+
+---
+
+## 🎯 今後の拡張計画
+
+- [ ] Terraformでリソースだけでなく CI/CD パイプラインまで自動生成
+- [ ] Grafana を使用した CloudWatch ダッシュボード開発
+
+---
+
+## 👥 チーム
+
+**Penguin-Land Team**
+
+- Software Engineer × 4名
+
+---
+
+## 📄 ライセンス
+
+MIT License
+
+---
+
+## 🙏 謝辞
+
+このプロジェクトはハッカソンのために開発されました。
+DevOpsの世界をより親しみやすく、楽しいものにすることを目指しています。
+
+---
+
+<div align="center">
+
+**Made with ❤️ and 🐧**
+
+</div>
