@@ -55,9 +55,6 @@ export interface Alert {
 }
 
 /**
- * シミュレーションリクエスト
+ * シミュレーションシナリオ
  */
-export interface SimulationRequest {
-  scenario: 'cpu_spike' | 'high_latency' | 'error_burst' | 'normal';
-  duration?: number; // seconds
-}
+export type SimulationScenarioType = 'cpu_spike' | 'high_latency' | 'error_burst' | 'normal';

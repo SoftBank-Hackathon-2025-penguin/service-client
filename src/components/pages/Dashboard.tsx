@@ -9,7 +9,7 @@ import { SimulationPanel } from '../dashboard/SimulationPanel';
 import { useMonitoringStore } from '../../stores/monitoringStore';
 import { useMonitoringPolling } from '../../hooks/useMonitoringPolling';
 import { useSimulation } from '../../hooks/useSimulation';
-import type { SimulationRequest } from '../../types/monitoring';
+import type { SimulationScenarioType } from '../../types/monitoring';
 
 export const Dashboard = () => {
   const { metrics, anomaly, alerts, isSimulating, acknowledgeAlert } = useMonitoringStore();
@@ -23,7 +23,7 @@ export const Dashboard = () => {
   /**
    * シミュレーション実行
    */
-  const handleSimulate = (scenario: SimulationRequest['scenario']) => {
+  const handleSimulate = (scenario: SimulationScenarioType) => {
     simulate(scenario, 30);
   };
 

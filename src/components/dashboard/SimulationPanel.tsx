@@ -1,19 +1,15 @@
 import styled from 'styled-components';
 import { Button } from '../common/Button';
-import type { SimulationRequest } from '../../types/monitoring';
+import type { SimulationScenarioType } from '../../types/monitoring';
 
 interface SimulationPanelProps {
   isSimulating: boolean;
-  onSimulate: (scenario: SimulationRequest['scenario']) => void;
+  onSimulate: (scenario: SimulationScenarioType) => void;
   onStop: () => void;
 }
 
-export const SimulationPanel = ({
-  isSimulating,
-  onSimulate,
-  onStop,
-}: SimulationPanelProps) => {
-  const scenarios = [
+export const SimulationPanel = ({ isSimulating, onSimulate, onStop }: SimulationPanelProps) => {
+  const scenarios: { id: SimulationScenarioType; label: string; description: string; icon: string }[] = [
     {
       id: 'cpu_spike',
       label: 'CPUスパイク',
@@ -38,9 +34,7 @@ export const SimulationPanel = ({
     <Container>
       <Header>
         <Title>🎮 シミュレーションモード</Title>
-        <Description>
-          デモ用に、強制的に危険な状況をシミュレートできます。
-        </Description>
+        <Description>デモ用に、強制的に危険な状況をシミュレートできます。</Description>
       </Header>
       <Content>
         {isSimulating ? (
@@ -58,16 +52,8 @@ export const SimulationPanel = ({
                   <ScenarioIcon>{scenario.icon}</ScenarioIcon>
                   <ScenarioLabel>{scenario.label}</ScenarioLabel>
                 </ScenarioHeader>
-                <ScenarioDescription>
-                  {scenario.description}
-                </ScenarioDescription>
-                <Button
-                  onClick={() =>
-                    onSimulate(scenario.id as SimulationRequest['scenario'])
-                  }
-                >
-                  シミュレーション開始
-                </Button>
+                <ScenarioDescription>{scenario.description}</ScenarioDescription>
+                <Button onClick={() => onSimulate(scenario.id)}>シミュレーション開始</Button>
               </ScenarioCard>
             ))}
           </ScenarioGrid>
@@ -177,4 +163,3 @@ const SimulatingText = styled.p`
   font-weight: 600;
   color: ${({ theme }) => theme.color.warning};
 `;
-
