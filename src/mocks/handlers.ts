@@ -12,6 +12,12 @@ const deployStates = new Map<string, DeployStatusResponse>();
 
 // 統合モニタリングデータ
 let monitoringData: MonitoringResponse = {
+  anomaly: {
+    causes: [],
+    healthScore: 0,
+    healthState: 'healthy',
+    penguinAnimation: 'happy',
+  },
   metrics: {
     cpuUsage: 20,
     latency: 120,
@@ -200,79 +206,6 @@ export const getMonitoringHandler = http.get(`${BASE_URL}/api/v1/monitoring`, as
 });
 
 /**
- * シミュレーションの開始
- * Dashboard統合モニタリング用
- */
-export const startSimulationHandler = http.post(`${BASE_URL}/api/v1/monitoring/simulate/start`, async ({ request }) => {
-  await delay(200);
-
-  const body = (await request.json()) as {
-    scenario: string;
-    duration?: number;
-  };
-  const { scenario } = body;
-
-  // シナリオ別の危険状態設定
-  switch (scenario) {
-    case 'cpu_spike':
-      monitoringData.metrics.cpuUsage = 85;
-      monitoringData.metrics.latency = 250;
-      monitoringData.metrics.errorRate = 1;
-      monitoringData.alerts.push({
-        id: `alert-${Date.now()}`,
-        level: 'critical',
-        message: 'CPU使用率が85%を超えました！',
-        timestamp: new Date().toISOString(),
-        acknowledged: false,
-      });
-      break;
-
-    case 'high_latency':
-      monitoringData.metrics.cpuUsage = 45;
-      monitoringData.metrics.latency = 850;
-      monitoringData.metrics.errorRate = 2;
-      monitoringData.alerts.push({
-        id: `alert-${Date.now()}`,
-        level: 'critical',
-        message: '平均応答時間が850msを超えました！',
-        timestamp: new Date().toISOString(),
-        acknowledged: false,
-      });
-      break;
-
-    case 'error_burst':
-      monitoringData.metrics.cpuUsage = 50;
-      monitoringData.metrics.latency = 300;
-      monitoringData.metrics.errorRate = 8;
-      monitoringData.alerts.push({
-        id: `alert-${Date.now()}`,
-        level: 'critical',
-        message: 'エラー率が8%を超えました！',
-        timestamp: new Date().toISOString(),
-        acknowledged: false,
-      });
-      break;
-  }
-
-  return HttpResponse.json({ message: 'シミュレーションが開始されました。' });
-});
-
-/**
- * シミュレーションの終了
- * Dashboard統合モニタリング用
- */
-export const stopSimulationHandler = http.post(`${BASE_URL}/api/v1/monitoring/simulate/stop`, async () => {
-  await delay(200);
-
-  // 正常状態に復旧
-  monitoringData.metrics.cpuUsage = 25;
-  monitoringData.metrics.latency = 150;
-  monitoringData.metrics.errorRate = 0.5;
-
-  return HttpResponse.json({ message: 'シミュレーションが終了しました。' });
-});
-
-/**
  * すべてのハンドラーをエクスポート
  */
 export const handlers = [
@@ -281,6 +214,4 @@ export const handlers = [
   getResourcesHandler,
   destroyDeployHandler,
   getMonitoringHandler,
-  startSimulationHandler,
-  stopSimulationHandler,
 ];
