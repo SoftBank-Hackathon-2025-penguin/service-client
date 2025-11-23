@@ -26,11 +26,13 @@ const queryClient = new QueryClient({
  * MSW初期化
  */
 async function enableMocking() {
-  // 開発環境では常にMSWを有効化
-  if (import.meta.env.DEV) {
+  // .envのVITE_ENABLE_MSWが'true'の場合のみMSWを有効化
+  const enableMSW = import.meta.env['VITE_ENABLE_MSW'] === 'true';
+
+  if (enableMSW) {
     console.log('[MSW] 🐧 Starting Mock Service Worker...');
     console.log('[MSW] Environment:', {
-      VITE_ENABLE_MOCK: import.meta.env['VITE_ENABLE_MOCK'],
+      VITE_ENABLE_MSW: import.meta.env['VITE_ENABLE_MSW'],
       DEV: import.meta.env.DEV,
       MODE: import.meta.env.MODE,
     });
@@ -38,14 +40,18 @@ async function enableMocking() {
     const { worker } = await import('./mocks/browser');
 
     // Service Workerの開始
-    return worker.start({
-      onUnhandledRequest: 'warn',
-      serviceWorker: {
-        url: '/mockServiceWorker.js',
-      },
-    }).then(() => {
-      console.log('[MSW] ✅ Mocking enabled successfully!');
-    });
+    return worker
+      .start({
+        onUnhandledRequest: 'warn',
+        serviceWorker: {
+          url: '/mockServiceWorker.js',
+        },
+      })
+      .then(() => {
+        console.log('[MSW] ✅ Mocking enabled successfully!');
+      });
+  } else {
+    console.log('[MSW] ⏭️  MSW is disabled. Using real backend API.');
   }
 }
 

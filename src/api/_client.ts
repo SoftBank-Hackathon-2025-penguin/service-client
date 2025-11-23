@@ -2,7 +2,7 @@ import axios, { AxiosError } from 'axios';
 import { BASE_URL } from '../constants/api';
 
 // TODO: axiosインスタンス作成（例として設定、今後バックエンドに合わせて変更が必要）
-const client = axios.create({ baseURL: BASE_URL + '/api/v1' });
+const client = axios.create({ baseURL: BASE_URL });
 
 client.interceptors.response.use(
   (response) => response,

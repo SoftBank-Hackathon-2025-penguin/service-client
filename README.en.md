@@ -119,8 +119,28 @@ cd service-client
 # Install dependencies
 pnpm install
 
+# Configure environment variables
+cp .env.example .env
+# Edit the .env file to configure MSW on/off
+
 # Start development server
 pnpm dev
+```
+
+### Environment Variables
+
+You can configure the following settings in the `.env` file:
+
+| Variable | Description | Default Value |
+|----------|-------------|---------------|
+| `VITE_ENABLE_MSW` | Enable MSW mocking<br/>`true`: Use mock API<br/>`false`: Use real backend API | `true` |
+| `VITE_API_BASE_URL` | Backend API base URL<br/>(Used when MSW is disabled) | `http://localhost:8000` |
+
+**Example: Disable MSW and use real backend**
+
+```env
+VITE_ENABLE_MSW=false
+VITE_API_BASE_URL=http://localhost:8000
 ```
 
 ### Access

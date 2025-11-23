@@ -119,8 +119,28 @@ cd service-client
 # 依存パッケージをインストール
 pnpm install
 
+# 環境変数の設定
+cp .env.example .env
+# .envファイルを編集してMSWのon/offを設定
+
 # 開発サーバーを起動
 pnpm dev
+```
+
+### 環境変数の設定
+
+`.env`ファイルで以下の設定が可能です：
+
+| 変数名 | 説明 | デフォルト値 |
+|--------|------|--------------|
+| `VITE_ENABLE_MSW` | MSWモックを有効化するか<br/>`true`: モックAPI使用<br/>`false`: 実際のバックエンドAPI使用 | `true` |
+| `VITE_API_BASE_URL` | バックエンドAPIのベースURL<br/>（MSW無効時に使用） | `http://localhost:8000` |
+
+**例: MSWを無効にして実際のバックエンドを使用する場合**
+
+```env
+VITE_ENABLE_MSW=false
+VITE_API_BASE_URL=http://localhost:8000
 ```
 
 ### アクセス

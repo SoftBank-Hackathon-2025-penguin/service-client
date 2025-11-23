@@ -119,8 +119,28 @@ cd service-client
 # 의존성 패키지 설치
 pnpm install
 
+# 환경 변수 설정
+cp .env.example .env
+# .env 파일을 편집하여 MSW on/off 설정
+
 # 개발 서버 시작
 pnpm dev
+```
+
+### 환경 변수 설정
+
+`.env` 파일에서 다음 설정이 가능합니다:
+
+| 변수명              | 설명                                                                             | 기본값                  |
+| ------------------- | -------------------------------------------------------------------------------- | ----------------------- |
+| `VITE_ENABLE_MSW`   | MSW 모킹 활성화 여부<br/>`true`: 모킹 API 사용<br/>`false`: 실제 백엔드 API 사용 | `true`                  |
+| `VITE_API_BASE_URL` | 백엔드 API 베이스 URL<br/>(MSW 비활성화 시 사용)                                 | `http://localhost:8000` |
+
+**예: MSW를 비활성화하고 실제 백엔드를 사용하는 경우**
+
+```env
+VITE_ENABLE_MSW=false
+VITE_API_BASE_URL=http://localhost:8000
 ```
 
 ### 접속
