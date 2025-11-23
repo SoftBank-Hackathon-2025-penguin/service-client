@@ -11,7 +11,7 @@ type IntervalId = ReturnType<typeof setInterval>;
  * シミュレーション中は自動的に一時停止
  */
 export const useMonitoringPolling = () => {
-  const { calculateAnomalyFromMetrics, setAlerts, isSimulating } = useMonitoringStore();
+  const { setMetrics, setAnomaly, setAlerts, isSimulating } = useMonitoringStore();
   const intervalRef = useRef<IntervalId | null>(null);
   const isPollingRef = useRef(false);
 
@@ -20,7 +20,8 @@ export const useMonitoringPolling = () => {
       const data = await getMonitoring();
 
       // メトリクスベースの異常兆候を計算
-      calculateAnomalyFromMetrics(data.metrics);
+      setMetrics(data.metrics);
+      setAnomaly(data.anomaly);
 
       // アラートを更新
       if (data.alerts && data.alerts.length > 0) {
@@ -29,7 +30,7 @@ export const useMonitoringPolling = () => {
     } catch (error) {
       console.error('Monitoring polling error:', error);
     }
-  }, [calculateAnomalyFromMetrics, setAlerts]);
+  }, [setMetrics, setAnomaly, setAlerts]);
 
   const startPolling = useCallback(() => {
     if (isPollingRef.current) {
@@ -64,7 +65,7 @@ export const useMonitoringPolling = () => {
       stopPolling();
     } else {
       console.log('[Polling] 🎮 Simulation ended - resuming polling');
-    startPolling();
+      startPolling();
     }
   }, [isSimulating, startPolling, stopPolling]);
 

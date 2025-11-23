@@ -22,10 +22,15 @@ export interface MetricData {
  * 異常兆候スコア
  */
 export interface AnomalyScore {
+  causes: {
+    metric: 'CPU' | 'Latency' | 'ErrorRate';
+    severity: 'normal' | 'warning' | 'danger';
+    contribution: number;
+  }[];
+
   healthScore: number; // 0-100
   healthState: HealthState;
   penguinAnimation: PenguinAnimation;
-  coachMessage: string;
 }
 
 /**
@@ -34,6 +39,7 @@ export interface AnomalyScore {
  */
 export interface MonitoringResponse {
   metrics: MetricData;
+  anomaly: AnomalyScore;
   alerts: Alert[];
 }
 

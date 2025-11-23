@@ -9,7 +9,7 @@ type TimeoutId = ReturnType<typeof setTimeout>;
  * 統合シミュレーションフック
  */
 export const useSimulation = () => {
-  const { setSimulating, calculateAnomalyFromMetrics } = useMonitoringStore();
+  const { setSimulating, setAnomaly, setMetrics } = useMonitoringStore();
   const timeoutRef = useRef<TimeoutId | null>(null);
 
   /**
@@ -23,21 +23,39 @@ export const useSimulation = () => {
 
         // オプティミスティックUI更新（即時に危険状態を表示）
         if (scenario === 'cpu_spike') {
-          calculateAnomalyFromMetrics({
+          setAnomaly({
+            causes: [{ metric: 'CPU', severity: 'danger', contribution: 100 }],
+            healthState: 'danger',
+            penguinAnimation: 'crying',
+            healthScore: 85,
+          });
+          setMetrics({
             cpuUsage: 85,
             latency: 250,
             errorRate: 1,
             timestamp: new Date().toISOString(),
           });
         } else if (scenario === 'high_latency') {
-          calculateAnomalyFromMetrics({
+          setAnomaly({
+            causes: [{ metric: 'Latency', severity: 'danger', contribution: 100 }],
+            healthState: 'danger',
+            penguinAnimation: 'crying',
+            healthScore: 85,
+          });
+          setMetrics({
             cpuUsage: 45,
             latency: 850,
             errorRate: 2,
             timestamp: new Date().toISOString(),
           });
         } else if (scenario === 'error_burst') {
-          calculateAnomalyFromMetrics({
+          setAnomaly({
+            causes: [{ metric: 'ErrorRate', severity: 'danger', contribution: 100 }],
+            healthState: 'danger',
+            penguinAnimation: 'crying',
+            healthScore: 85,
+          });
+          setMetrics({
             cpuUsage: 50,
             latency: 300,
             errorRate: 8,
@@ -62,7 +80,7 @@ export const useSimulation = () => {
         setSimulating(false);
       }
     },
-    [setSimulating, calculateAnomalyFromMetrics]
+    [setSimulating, setAnomaly, setMetrics]
   );
 
   /**
@@ -76,10 +94,16 @@ export const useSimulation = () => {
       console.log('[Simulation] ✅ Simulation stopped successfully');
 
       // 正常状態に復旧
-      calculateAnomalyFromMetrics({
-        cpuUsage: 25,
-        latency: 150,
-        errorRate: 0.5,
+      setAnomaly({
+        causes: [{ metric: 'CPU', severity: 'normal', contribution: 100 }],
+        healthScore: 100,
+        healthState: 'healthy',
+        penguinAnimation: 'happy',
+      });
+      setMetrics({
+        cpuUsage: 0,
+        latency: 0,
+        errorRate: 0,
         timestamp: new Date().toISOString(),
       });
 
@@ -94,7 +118,7 @@ export const useSimulation = () => {
       console.error('Simulation stop error:', error);
       setSimulating(false);
     }
-  }, [setSimulating, calculateAnomalyFromMetrics]);
+  }, [setSimulating, setAnomaly, setMetrics]);
 
   return {
     simulate,
