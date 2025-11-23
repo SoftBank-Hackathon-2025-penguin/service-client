@@ -51,7 +51,7 @@ export const DeployPage = () => {
       setError(null);
 
       const response = await createDeploy({
-        projectName: 'penguin-land',
+        projectName: `penguin-land-${new Date().getTime()}`,
       });
 
       console.log('[Deploy] 📦 Created deployment:', response);
