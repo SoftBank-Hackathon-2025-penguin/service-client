@@ -36,6 +36,7 @@ export const DeployPage = () => {
 
   const [isCreating, setIsCreating] = useState(false);
   const [isDestroying, setIsDestroying] = useState(false);
+  const [isFetchingResources, setIsFetchingResources] = useState(false);
 
   /**
    * デプロイ作成
@@ -70,26 +71,34 @@ export const DeployPage = () => {
   };
 
   /**
-   * デプロイ完了時にリソースを照会
+   * デプロイ完了時にリソースを照会し、成功後にセレブレーション実行
    */
   useEffect(() => {
-    if (deployState === 'COMPLETE' && sessionId) {
+    if (deployState === 'COMPLETE' && sessionId && !resources && !isFetchingResources) {
       const fetchResources = async () => {
         try {
+          setIsFetchingResources(true);
+          console.log('[Deploy] 📡 Fetching resources...');
+
           const resData = await getResources(sessionId);
           setResources(resData.resources);
 
-          // ペンギンスペシャルセレブレーション！ 🐧🎉
+          console.log('[Deploy] ✅ Resources fetched successfully');
+
+          // リソース取得成功後にセレブレーション！ 🐧🎉
           penguinCelebration();
           showToast('🎉 デプロイが完了しました！', 'success');
         } catch (error) {
           console.error('Failed to fetch resources:', error);
           setError('リソース情報の取得に失敗しました');
+          showToast('リソース情報の取得に失敗しました', 'error');
+        } finally {
+          setIsFetchingResources(false);
         }
       };
       fetchResources();
     }
-  }, [deployState, sessionId, setResources, setError, showToast]);
+  }, [deployState, sessionId, resources, isFetchingResources, setResources, setError, showToast]);
 
   /**
    * デプロイの削除
@@ -138,6 +147,8 @@ export const DeployPage = () => {
     deployState === 'APPLYING' || deployState === 'PLANNING' || (sessionId && deployState === 'INIT');
   const isComplete = deployState === 'COMPLETE';
   const isFailed = deployState === 'FAILED';
+  const isCompleteButFetchingResources = isComplete && isFetchingResources;
+  const isCompleteWithResources = isComplete && resources !== null;
 
   return (
     <Layout>
@@ -152,7 +163,7 @@ export const DeployPage = () => {
           <Title>🚀 デプロイコンソール</Title>
           <ButtonGroup>
             {isFailed && <Button onClick={handleRetry}>再試行</Button>}
-            {(isComplete || isFailed) && (
+            {(isCompleteWithResources || isFailed) && (
               <Button variant="danger" onClick={handleDestroy} disabled={isDestroying}>
                 {isDestroying ? '削除中...' : 'すべて削除'}
               </Button>
@@ -182,6 +193,8 @@ export const DeployPage = () => {
             </Card>
 
             {isInProgress && <LoadingSpinner message="デプロイが進行中です..." />}
+
+            {isCompleteButFetchingResources && <LoadingSpinner message="リソース情報を取得しています..." />}
 
             {logs.length > 0 && <LogViewer logs={logs} />}
 
